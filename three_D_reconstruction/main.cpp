@@ -35,42 +35,42 @@ float Z=0;
 
 Size mousePoint=Size(0,0);
 
-Size imageSize;//±ê¶¨Í¼ÏñµÄ·Ö±æÂÊ£¨960x720£©
+Size imageSize;//æ ‡å®šå›¾åƒçš„åˆ†è¾¨ç‡ï¼ˆ960x720ï¼‰
 Size boardSize;
 int nrFrames=0;
-Mat cameraMatrix1;//×óÏà»úÄÚ²Î¾ØÕó
-Mat distCoeffs1;//×óÏà»ú»û±äÏµÊı¾ØÕó
-Mat cameraMatrix2;//ÓÒÏà»úÄÚ²Î¾ØÕó
-Mat distCoeffs2;//ÓÒÏà»ú»û±äÏµÊı¾ØÕó
-Mat R, T, E, F; //R Ğı×ªÊ¸Á¿ TÆ½ÒÆÊ¸Á¿ E±¾Õ÷¾ØÕó F»ù´¡¾ØÕó
-Mat R1, R2, P1, P2, Q; //Ğ£ÕıĞı×ª¾ØÕóR£¬Í¶Ó°¾ØÕóP ÖØÍ¶Ó°¾ØÕóQ 
-Mat mapx1, mapy1, mapx2, mapy2; //Ó³Éä±í  
-Rect validROI1, validROI2; //Í¼ÏñĞ£ÕıÖ®ºó£¬»á¶ÔÍ¼Ïñ½øĞĞ²Ã¼ô£¬ÕâÀïµÄvalidROI¾ÍÊÇÖ¸²Ã¼ôÖ®ºóµÄÇøÓò  
-bool isopen=true;//ÓÃÓÚÅĞ¶ÏÏà»ú»ñÈ¡Í¼Ïñ¶ÔÊ±ÊÇ·ñ´ò¿ª
-Mat imgLeft;//Ğ£ÕıºóµÄ×óÍ¼Ïñ
-Mat imgRight;//Ğ£ÕıºóµÄÓÒÍ¼Ïñ
-Mat disparity8U;//½«ÊÓ²îÖµ·¶Î§Í¶Ó°µ½0-255µÄÊÓ²îÍ¼
-Mat disparity_real;//ÕæÊµÊÓ²îÖµµÄÊÓ²îÍ¼
-Mat disparity;//µ÷ÓÃº¯ÊıµÃµ½µÄÔ­Ê¼ÊÓ²îÍ¼
-int numDisparities = 7;//Æ¥ÅäËÑË÷µÄÊÓ²î·¶Î§£¬¹æ¶¨±ØĞëÄÜ±»16Õû³ı
-int blockSize = 7;//Æ¥Åä´°¿Ú´óĞ¡
+Mat cameraMatrix1;//å·¦ç›¸æœºå†…å‚çŸ©é˜µ
+Mat distCoeffs1;//å·¦ç›¸æœºç•¸å˜ç³»æ•°çŸ©é˜µ
+Mat cameraMatrix2;//å³ç›¸æœºå†…å‚çŸ©é˜µ
+Mat distCoeffs2;//å³ç›¸æœºç•¸å˜ç³»æ•°çŸ©é˜µ
+Mat R, T, E, F; //R æ—‹è½¬çŸ¢é‡ Tå¹³ç§»çŸ¢é‡ Eæœ¬å¾çŸ©é˜µ FåŸºç¡€çŸ©é˜µ
+Mat R1, R2, P1, P2, Q; //æ ¡æ­£æ—‹è½¬çŸ©é˜µRï¼ŒæŠ•å½±çŸ©é˜µP é‡æŠ•å½±çŸ©é˜µQ 
+Mat mapx1, mapy1, mapx2, mapy2; //æ˜ å°„è¡¨  
+Rect validROI1, validROI2; //å›¾åƒæ ¡æ­£ä¹‹åï¼Œä¼šå¯¹å›¾åƒè¿›è¡Œè£å‰ªï¼Œè¿™é‡Œçš„validROIå°±æ˜¯æŒ‡è£å‰ªä¹‹åçš„åŒºåŸŸ  
+bool isopen=true;//ç”¨äºåˆ¤æ–­ç›¸æœºè·å–å›¾åƒå¯¹æ—¶æ˜¯å¦æ‰“å¼€
+Mat imgLeft;//æ ¡æ­£åçš„å·¦å›¾åƒ
+Mat imgRight;//æ ¡æ­£åçš„å³å›¾åƒ
+Mat disparity8U;//å°†è§†å·®å€¼èŒƒå›´æŠ•å½±åˆ°0-255çš„è§†å·®å›¾
+Mat disparity_real;//çœŸå®è§†å·®å€¼çš„è§†å·®å›¾
+Mat disparity;//è°ƒç”¨å‡½æ•°å¾—åˆ°çš„åŸå§‹è§†å·®å›¾
+int numDisparities = 7;//åŒ¹é…æœç´¢çš„è§†å·®èŒƒå›´ï¼Œè§„å®šå¿…é¡»èƒ½è¢«16æ•´é™¤
+int blockSize = 7;//åŒ¹é…çª—å£å¤§å°
 int UniquenessRatio=5;
 Ptr<StereoBM> bm = StereoBM::create(16,21);
-Mat _3dImage;//ÈıÎ¬×ø±êÍ¼
-//ÉèÖÃÊó±ê»Øµ÷º¯Êıon_mouse()ÓÃÓÚÊä³öÊó±êÖ¸¶¨µã£¨µ¥»÷×ó¼ü£©µÄÊÓ²îÖµºÍÈıÎ¬XYZÖµ£¨µ¥Î»£ºÀåÃ×£©
+Mat _3dImage;//ä¸‰ç»´åæ ‡å›¾
+//è®¾ç½®é¼ æ ‡å›è°ƒå‡½æ•°on_mouse()ç”¨äºè¾“å‡ºé¼ æ ‡æŒ‡å®šç‚¹ï¼ˆå•å‡»å·¦é”®ï¼‰çš„è§†å·®å€¼å’Œä¸‰ç»´XYZå€¼ï¼ˆå•ä½ï¼šå˜ç±³ï¼‰
 void on_mouse(int event,int x,int y,int flags,void* a)
 {
-	if(event==CV_EVENT_LBUTTONDOWN)//°´ÏÂ×ó¼ü
+	if(event==CV_EVENT_LBUTTONDOWN)//æŒ‰ä¸‹å·¦é”®
 	{
 		mousePoint.width=x;
 		mousePoint.height=y;
 		//cout<<"x="<<mousePoint.width<<'\t'<<"y="<<mousePoint.height<<endl;
 	}
 }
-//ÉèÖÃÊó±ê»Øµ÷º¯Êıon_mouse1()ÓÃÓÚ»ñÈ¡²â¾àÓÃµÄ×óÓÒÍ¼Ïñ¶Ô£¨Ë«»÷×ó¼ü£©
+//è®¾ç½®é¼ æ ‡å›è°ƒå‡½æ•°on_mouse1()ç”¨äºè·å–æµ‹è·ç”¨çš„å·¦å³å›¾åƒå¯¹ï¼ˆåŒå‡»å·¦é”®ï¼‰
 void on_mouse1(int event,int x,int y,int flags,void* a)
 {
-	if(event==CV_EVENT_LBUTTONDBLCLK)//Ë«»÷×ó¼ü
+	if(event==CV_EVENT_LBUTTONDBLCLK)//åŒå‡»å·¦é”®
 	{
 		get_imagePair=true;
 	}
@@ -96,8 +96,8 @@ bool readFile(string filename)
 		fs.release();
 		/*
 		cout<<"Succeed to read the Calibration result!!!"<<endl;
-		cout<<"×óÏà»úÄÚ²Î¾ØÕó£º"<<endl<<cameraMatrix1<<endl;
-		cout<<"ÓÒÏà»úÄÚ²Î¾ØÕó£º"<<endl<<cameraMatrix2<<endl;
+		cout<<"å·¦ç›¸æœºå†…å‚çŸ©é˜µï¼š"<<endl<<cameraMatrix1<<endl;
+		cout<<"å³ç›¸æœºå†…å‚çŸ©é˜µï¼š"<<endl<<cameraMatrix2<<endl;
 		cout<<"R:"<<endl<<R<<endl;
 		cout<<"T:"<<endl<<T<<endl;
 		cout<<"E:"<<endl<<E<<endl;
@@ -115,36 +115,48 @@ void stereo_rectify(bool useCalibrated,int getImagePair,string path1,string path
 {
 	/**************************************************************************************/
 	/*
-	ÒªÊµÏÖÁ¢ÌåĞ£Õı£¬Ê¹×óÓÒÍ¼Ïñ¹²Æ½ÃæÇÒĞĞ¶Ô×¼£¬ĞèÒªÓÃµ½ÒÔÏÂ²ÎÊı£º
+	
+	ç«‹ä½“æ ¡æ­£çš„æ—¶å€™éœ€è¦ä¸¤å¹…å›¾åƒå…±é¢å¹¶ä¸”è¡Œå¯¹å‡† ä»¥ä½¿å¾—ç«‹ä½“åŒ¹é…æ›´åŠ çš„å¯é 
+	åŒç›®æ ¡æ­£çš„ä½œç”¨å°±æ˜¯è¦æŠŠæ¶ˆé™¤ç•¸å˜åçš„ä¸¤å¹…å›¾åƒä¸¥æ ¼åœ°è¡Œå¯¹åº”ï¼Œä½¿å¾—ä¸¤å¹…å›¾åƒçš„å¯¹æçº¿æ°å¥½åœ¨åŒä¸€æ°´å¹³çº¿ä¸Šï¼Œ
+	è¿™æ ·ä¸€å¹…å›¾åƒä¸Šä»»æ„ä¸€ç‚¹ä¸å…¶åœ¨å¦ä¸€å¹…å›¾åƒä¸Šçš„å¯¹åº”ç‚¹å°±å¿…ç„¶å…·æœ‰ç›¸åŒçš„è¡Œå·ï¼Œåªéœ€åœ¨è¯¥è¡Œè¿›è¡Œä¸€ç»´æœç´¢å³å¯åŒ¹é…åˆ°å¯¹åº”ç‚¹ã€‚
+	ä½¿å¾—ä¸¤å¹…å›¾åƒå…±é¢çš„æ–¹æ³•å°±æ˜¯æŠŠä¸¤ä¸ªæ‘„åƒå¤´çš„å›¾åƒæŠ•å½±åˆ°ä¸€ä¸ªå…¬å…±æˆåƒé¢ä¸Šï¼Œè¿™æ ·æ¯å¹…å›¾åƒä»æœ¬å›¾åƒå¹³é¢æŠ•å½±åˆ°å…¬å…±å›¾åƒå¹³é¢éƒ½éœ€è¦ä¸€ä¸ªæ—‹è½¬çŸ©é˜µR
+	stereoRectify è¿™ä¸ªå‡½æ•°è®¡ç®—çš„å°±æ˜¯ä»å›¾åƒå¹³é¢æŠ•å½±éƒ½å…¬å…±æˆåƒå¹³é¢çš„æ—‹è½¬çŸ©é˜µRl,Rrã€‚ Rl,Rrå³ä¸ºå·¦å³ç›¸æœºå¹³é¢è¡Œå¯¹å‡†çš„æ ¡æ­£æ—‹è½¬çŸ©é˜µã€‚
+	å·¦ç›¸æœºç»è¿‡Rlæ—‹è½¬ï¼Œå³ç›¸æœºç»è¿‡Rræ—‹è½¬ä¹‹åï¼Œä¸¤å¹…å›¾åƒå°±å·²ç»å…±é¢å¹¶ä¸”è¡Œå¯¹å‡†äº†ã€‚
+	å…¶ä¸­Pl,Prä¸ºä¸¤ä¸ªç›¸æœºçš„æŠ•å½±çŸ©é˜µï¼Œå…¶ä½œç”¨æ˜¯å°†3Dç‚¹çš„åæ ‡è½¬æ¢åˆ°å›¾åƒçš„2Dç‚¹çš„åæ ‡:P*[X Y Z 1]' =[x y w] 
+	QçŸ©é˜µä¸ºé‡æŠ•å½±çŸ©é˜µï¼Œå³çŸ©é˜µQå¯ä»¥æŠŠ2ç»´å¹³é¢(å›¾åƒå¹³é¢)ä¸Šçš„ç‚¹æŠ•å½±åˆ°3ç»´ç©ºé—´çš„ç‚¹:Q*[x y d 1] = [X Y Z W]ã€‚å…¶ä¸­dä¸ºå·¦å³ä¸¤å¹…å›¾åƒçš„æ—¶å·®
+	
+	
+	
+	è¦å®ç°ç«‹ä½“æ ¡æ­£ï¼Œä½¿å·¦å³å›¾åƒå…±å¹³é¢ä¸”è¡Œå¯¹å‡†ï¼Œéœ€è¦ç”¨åˆ°ä»¥ä¸‹å‚æ•°ï¼š
 	cameraMatrix1, distCoeffs1, R1, P1
 	cameraMatrix2, distCoeffs2, R2, P2
-	ÆäÖĞÄÚ²Î¾ØÕóºÍ»û±äÏµÊıÍ¨¹ı±ê¶¨³ÌĞò»ñµÃ£¬µ«R1¡¢P1¡¢R2¡¢P2µÄÖµ£¬opencvÌá¹©ÁËÁ½ÖÖ·½·¨£º
-	1. Hartley·½·¨£»
-	ÕâÖÖ·½·¨³ÆÎª¡°·Ç±ê¶¨Á¢ÌåĞ£Õı·½·¨¡±£¬Ò²¾ÍÊÇËµ²»ÓÃÍ¨¹ı±ê¶¨»ñµÃµÄÄÚ²Î¾ØÕóºÍ»û±äÏµÊı»ñÈ¡
-	R1¡¢P1¡¢R2¡¢P2µÄÖµ£¬Ö±½Ó¸ù¾İÆ¥Åäµã¼ÆËã»ù´¡¾ØÕóF£¬ÔÙ½øÒ»²½¼ÆËãR1¡¢P1¡¢R2¡¢P2¡£
-	ÕâÖÖ·½·¨Ö÷ÒªÓÃµ½Á½¸öº¯Êı£ºfindFundamentalMat()ºÍstereoRectifyUncalibrated()
-	¾ßÌåµÄÔ­ÀíËµÃ÷²Î¿¼¡¶Learning opencv¡·ÖĞÎÄ°æ498Ò³¡£
-	2. Bouguet·½·¨ 
-	ÕâÖÖ·½·¨³ÆÎª¡°±ê¶¨Á¢ÌåĞ£Õı·½·¨¡±£¬ËüÊÇ¸ù¾İÁ¢Ìå±ê¶¨»ñµÃµÄÄÚ²Î¾ØÕó¡¢»û±äÏµÊı¡¢RºÍT×÷Îª
-	ÊäÈë£¬ÀûÓÃstereoRectify()º¯ÊıµÃµ½R1¡¢P1¡¢R2¡¢P2µÄÖµ¡£
-	Á½ÖÖ·½·¨µÄÑ¡ÓÃ¸ù¾İboolÀàĞÍµÄuseCalibrated±äÁ¿¾ö¶¨£¬
-	µ±useCalibrated=trueÊ±£¬µ÷ÓÃBouguet·½·¨£»
-	µ±useCalibrated=falseÊ±£¬µ÷ÓÃHartley·½·¨£»
+	å…¶ä¸­å†…å‚çŸ©é˜µå’Œç•¸å˜ç³»æ•°é€šè¿‡æ ‡å®šç¨‹åºè·å¾—ï¼Œä½†R1ã€P1ã€R2ã€P2çš„å€¼ï¼Œopencvæä¾›äº†ä¸¤ç§æ–¹æ³•ï¼š
+	1. Hartleyæ–¹æ³•ï¼›
+	è¿™ç§æ–¹æ³•ç§°ä¸ºâ€œéæ ‡å®šç«‹ä½“æ ¡æ­£æ–¹æ³•â€ï¼Œä¹Ÿå°±æ˜¯è¯´ä¸ç”¨é€šè¿‡æ ‡å®šè·å¾—çš„å†…å‚çŸ©é˜µå’Œç•¸å˜ç³»æ•°è·å–
+	R1ã€P1ã€R2ã€P2çš„å€¼ï¼Œç›´æ¥æ ¹æ®åŒ¹é…ç‚¹è®¡ç®—åŸºç¡€çŸ©é˜µFï¼Œå†è¿›ä¸€æ­¥è®¡ç®—R1ã€P1ã€R2ã€P2ã€‚
+	è¿™ç§æ–¹æ³•ä¸»è¦ç”¨åˆ°ä¸¤ä¸ªå‡½æ•°ï¼šfindFundamentalMat()å’ŒstereoRectifyUncalibrated()
+	å…·ä½“çš„åŸç†è¯´æ˜å‚è€ƒã€ŠLearning opencvã€‹ä¸­æ–‡ç‰ˆ498é¡µã€‚
+	2. Bouguetæ–¹æ³• 
+	è¿™ç§æ–¹æ³•ç§°ä¸ºâ€œæ ‡å®šç«‹ä½“æ ¡æ­£æ–¹æ³•â€ï¼Œå®ƒæ˜¯æ ¹æ®ç«‹ä½“æ ‡å®šè·å¾—çš„å†…å‚çŸ©é˜µã€ç•¸å˜ç³»æ•°ã€Rå’ŒTä½œä¸º
+	è¾“å…¥ï¼Œåˆ©ç”¨stereoRectify()å‡½æ•°å¾—åˆ°R1ã€P1ã€R2ã€P2çš„å€¼ã€‚
+	ä¸¤ç§æ–¹æ³•çš„é€‰ç”¨æ ¹æ®boolç±»å‹çš„useCalibratedå˜é‡å†³å®šï¼Œ
+	å½“useCalibrated=trueæ—¶ï¼Œè°ƒç”¨Bouguetæ–¹æ³•ï¼›
+	å½“useCalibrated=falseæ—¶ï¼Œè°ƒç”¨Hartleyæ–¹æ³•ï¼›
 	*/
 	/**************************************************************************************/
-	//µ±useCalibrated=trueÊ±£¬µ÷ÓÃBouguet·½·¨
+	//å½“useCalibrated=trueæ—¶ï¼Œè°ƒç”¨Bouguetæ–¹æ³•
     if( useCalibrated )
     {
-        //²ÎÊıalphaµÄÉèÖÃ¶Ô½á¹ûÓ°ÏìºÜ´ó
-		//alpha£ºÍ¼Ïñ¼ô²ÃÏµÊı£¬È¡Öµ·¶Î§ÊÇ-1¡¢0~1¡£
-		//µ±È¡ÖµÎª 0 Ê±£¬OpenCV»á¶ÔĞ£ÕıºóµÄÍ¼Ïñ½øĞĞËõ·ÅºÍÆ½ÒÆ£¬Ê¹µÃremapÍ¼ÏñÖ»ÏÔÊ¾ÓĞĞ§ÏñËØ£¨¼´È¥³ı²»¹æÔòµÄ±ß½ÇÇøÓò£©,ÊÊÓÃÓÚ»úÆ÷ÈË±ÜÕÏµ¼º½µÈÓ¦ÓÃ£»
-		//µ±alphaÈ¡ÖµÎª1Ê±£¬remapÍ¼Ïñ½«ÏÔÊ¾ËùÓĞÔ­Í¼ÏñÖĞ°üº¬µÄÏñËØ£¬¸ÃÈ¡ÖµÊÊÓÃÓÚ»û±äÏµÊı¼«ÉÙµÄ¸ß¶ËÉãÏñÍ·£»
-		//alphaÈ¡ÖµÔÚ0-1Ö®¼äÊ±£¬OpenCV°´¶ÔÓ¦±ÈÀı±£ÁôÔ­Í¼ÏñµÄ±ß½ÇÇøÓòÏñËØ¡£
-		//AlphaÈ¡ÖµÎª-1Ê±£¬OpenCV×Ô¶¯½øĞĞËõ·ÅºÍÆ½ÒÆ
+        //å‚æ•°alphaçš„è®¾ç½®å¯¹ç»“æœå½±å“å¾ˆå¤§
+		//alphaï¼šå›¾åƒå‰ªè£ç³»æ•°ï¼Œå–å€¼èŒƒå›´æ˜¯-1ã€0~1ã€‚
+		//å½“å–å€¼ä¸º 0 æ—¶ï¼ŒOpenCVä¼šå¯¹æ ¡æ­£åçš„å›¾åƒè¿›è¡Œç¼©æ”¾å’Œå¹³ç§»ï¼Œä½¿å¾—remapå›¾åƒåªæ˜¾ç¤ºæœ‰æ•ˆåƒç´ ï¼ˆå³å»é™¤ä¸è§„åˆ™çš„è¾¹è§’åŒºåŸŸï¼‰,é€‚ç”¨äºæœºå™¨äººé¿éšœå¯¼èˆªç­‰åº”ç”¨ï¼›
+		//å½“alphaå–å€¼ä¸º1æ—¶ï¼Œremapå›¾åƒå°†æ˜¾ç¤ºæ‰€æœ‰åŸå›¾åƒä¸­åŒ…å«çš„åƒç´ ï¼Œè¯¥å–å€¼é€‚ç”¨äºç•¸å˜ç³»æ•°æå°‘çš„é«˜ç«¯æ‘„åƒå¤´ï¼›
+		//alphaå–å€¼åœ¨0-1ä¹‹é—´æ—¶ï¼ŒOpenCVæŒ‰å¯¹åº”æ¯”ä¾‹ä¿ç•™åŸå›¾åƒçš„è¾¹è§’åŒºåŸŸåƒç´ ã€‚
+		//Alphaå–å€¼ä¸º-1æ—¶ï¼ŒOpenCVè‡ªåŠ¨è¿›è¡Œç¼©æ”¾å’Œå¹³ç§»
 		stereoRectify(cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, imageSize, R, T, R1, R2, P1, P2, Q,  
                   CALIB_ZERO_DISPARITY,0,imageSize,&validROI1,&validROI2);
     }
-	//µ±useCalibrated=falseÊ±£¬µ÷ÓÃHartley·½·¨
+	//å½“useCalibrated=falseæ—¶ï¼Œè°ƒç”¨Hartleyæ–¹æ³•
     else
     {
 		vector<vector<Point2f> > imagePoints1;
@@ -192,11 +204,11 @@ void stereo_rectify(bool useCalibrated,int getImagePair,string path1,string path
         P2 = cameraMatrix2;
     }
 	/* 
-    ¸ù¾İstereoRectify¼ÆËã³öÀ´µÄRºÍPÀ´¼ÆËãÍ¼ÏñµÄÓ³Éä±ímapx,mapy 
-    mapx,mapyÕâÁ½¸öÓ³Éä±í½ÓÏÂÀ´¿ÉÒÔ¸øremap()º¯Êıµ÷ÓÃ£¬À´Ğ£ÕıÍ¼Ïñ£¬Ê¹µÃÁ½·ùÍ¼Ïñ¹²Ãæ²¢ÇÒĞĞ¶Ô×¼ 
-    initUndistortRectifyMap()µÄ²ÎÊınewCameraMatrix¾ÍÊÇĞ£ÕıºóµÄÉãÏñ»ú¾ØÕó¡£
-	ÔÚopenCVÀïÃæ£¬Ğ£ÕıºóµÄ¼ÆËã»ú¾ØÕóMrectÊÇ¸úÍ¶Ó°¾ØÕóPÒ»Æğ·µ»ØµÄ¡£ 
-    ËùÒÔÎÒÃÇÔÚÕâÀï´«ÈëÍ¶Ó°¾ØÕóP£¬´Ëº¯Êı¿ÉÒÔ´ÓÍ¶Ó°¾ØÕóPÖĞ¶Á³öĞ£ÕıºóµÄÉãÏñ»ú¾ØÕó 
+    æ ¹æ®stereoRectifyè®¡ç®—å‡ºæ¥çš„Rå’ŒPæ¥è®¡ç®—å›¾åƒçš„æ˜ å°„è¡¨mapx,mapy 
+    mapx,mapyè¿™ä¸¤ä¸ªæ˜ å°„è¡¨æ¥ä¸‹æ¥å¯ä»¥ç»™remap()å‡½æ•°è°ƒç”¨ï¼Œæ¥æ ¡æ­£å›¾åƒï¼Œä½¿å¾—ä¸¤å¹…å›¾åƒå…±é¢å¹¶ä¸”è¡Œå¯¹å‡† 
+    initUndistortRectifyMap()çš„å‚æ•°newCameraMatrixå°±æ˜¯æ ¡æ­£åçš„æ‘„åƒæœºçŸ©é˜µã€‚
+	åœ¨openCVé‡Œé¢ï¼Œæ ¡æ­£åçš„è®¡ç®—æœºçŸ©é˜µMrectæ˜¯è·ŸæŠ•å½±çŸ©é˜µPä¸€èµ·è¿”å›çš„ã€‚ 
+    æ‰€ä»¥æˆ‘ä»¬åœ¨è¿™é‡Œä¼ å…¥æŠ•å½±çŸ©é˜µPï¼Œæ­¤å‡½æ•°å¯ä»¥ä»æŠ•å½±çŸ©é˜µPä¸­è¯»å‡ºæ ¡æ­£åçš„æ‘„åƒæœºçŸ©é˜µ 
     */
 	initUndistortRectifyMap(cameraMatrix1, distCoeffs1, R1, P1, imageSize, CV_16SC2, mapx1, mapy1);  
     initUndistortRectifyMap(cameraMatrix2, distCoeffs2, R2, P2, imageSize, CV_16SC2, mapx2, mapy2); 
@@ -229,18 +241,18 @@ void stereo_rectify(bool useCalibrated,int getImagePair,string path1,string path
 		inputCapture2.set(CV_CAP_PROP_FRAME_WIDTH, 640);  
 		inputCapture2.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
 		*/
-		namedWindow("»ñÈ¡Í¼Ïñ¶Ô´°¿Ú£¨Ë«»÷×ó¼ü£©",WINDOW_AUTOSIZE);
-		//ÉèÖÃÊó±ê»Øµ÷º¯Êıon_mouse1()ÓÃÓÚ»ñÈ¡ÈıÎ¬ÖØ½¨ÓÃµÄ×óÓÒÍ¼Ïñ¶Ô
-		//ÔÚÖ¸¶¨´°¿ÚË«»÷Êó±ê×ó¼üÒ»´Î²É¼¯Ò»¶ÔÍ¼Ïñ
-		cvSetMouseCallback("»ñÈ¡Í¼Ïñ¶Ô´°¿Ú£¨Ë«»÷×ó¼ü£©",on_mouse1,NULL);
+		namedWindow("è·å–å›¾åƒå¯¹çª—å£ï¼ˆåŒå‡»å·¦é”®ï¼‰",WINDOW_AUTOSIZE);
+		//è®¾ç½®é¼ æ ‡å›è°ƒå‡½æ•°on_mouse1()ç”¨äºè·å–ä¸‰ç»´é‡å»ºç”¨çš„å·¦å³å›¾åƒå¯¹
+		//åœ¨æŒ‡å®šçª—å£åŒå‡»é¼ æ ‡å·¦é”®ä¸€æ¬¡é‡‡é›†ä¸€å¯¹å›¾åƒ
+		cvSetMouseCallback("è·å–å›¾åƒå¯¹çª—å£ï¼ˆåŒå‡»å·¦é”®ï¼‰",on_mouse1,NULL);
 		Mat src_image1;
 		Mat src_image2;
 		while(1)
 		{
 			inputCapture1>>src_image1;
 			inputCapture2>>src_image2;
-			imshow("»ñÈ¡Í¼Ïñ¶Ô´°¿Ú£¨Ë«»÷×ó¼ü£©",src_image1);
-			imshow("»ñÈ¡Í¼Ïñ¶Ô´°¿Ú(ÓÒÍ¼Ïñ)",src_image2);
+			imshow("è·å–å›¾åƒå¯¹çª—å£ï¼ˆåŒå‡»å·¦é”®ï¼‰",src_image1);
+			imshow("è·å–å›¾åƒå¯¹çª—å£(å³å›¾åƒ)",src_image2);
 			waitKey(35);
 			if(get_imagePair==true)
 			{
@@ -254,12 +266,12 @@ void stereo_rectify(bool useCalibrated,int getImagePair,string path1,string path
 				sprintf(address,"Stereo_Sample\\ImageR1%s",".jpg");
 				imwrite(address,cap2);
 				get_imagePair=false;
-				cout<<"Í¼Ïñ¶Ô²É¼¯Íê±Ï£¡£¡£¡£¡"<<endl;
+				cout<<"å›¾åƒå¯¹é‡‡é›†å®Œæ¯•ï¼ï¼ï¼ï¼"<<endl;
 				break;
 			}
 		}
-		destroyWindow("»ñÈ¡Í¼Ïñ¶Ô´°¿Ú£¨Ë«»÷×ó¼ü£©");
-		destroyWindow("»ñÈ¡Í¼Ïñ¶Ô´°¿Ú£¨ÓÒÍ¼Ïñ£©");
+		destroyWindow("è·å–å›¾åƒå¯¹çª—å£ï¼ˆåŒå‡»å·¦é”®ï¼‰");
+		destroyWindow("è·å–å›¾åƒå¯¹çª—å£ï¼ˆå³å›¾åƒï¼‰");
 	}
 	Mat grayimgLeft = imread(path1, IMREAD_GRAYSCALE );
     Mat grayimgRight = imread(path2, IMREAD_GRAYSCALE );
@@ -273,7 +285,7 @@ void stereo_rectify(bool useCalibrated,int getImagePair,string path1,string path
 	//imshow("ImageL",grayimgLeft);
     //imshow("ImageR",grayimgRight);
     
-    //¾­¹ıremapÖ®ºó£¬×óÓÒÏà»úµÄÍ¼ÏñÒÑ¾­¹²Ãæ²¢ÇÒĞĞ¶Ô×¼ÁË 
+    //ç»è¿‡remapä¹‹åï¼Œå·¦å³ç›¸æœºçš„å›¾åƒå·²ç»å…±é¢å¹¶ä¸”è¡Œå¯¹å‡†äº† 
 	//remap(grayimgLeft, imgLeft, mapx1, mapy1, INTER_LINEAR);  
     //remap(grayimgRight, imgRight, mapx2, mapy2, INTER_LINEAR);
 	remap(gaussianBlurLeft, imgLeft, mapx1, mapy1, INTER_LINEAR);  
@@ -284,22 +296,22 @@ void stereo_rectify(bool useCalibrated,int getImagePair,string path1,string path
 void show_rectify_performance()
 {
 	/**********************************************************************************/
-    /***************°Ñ×óÓÒÍ¼ÏñµÄĞ£Õı½á¹ûÏÔÊ¾µ½Í¬Ò»»­ÃæÉÏ½øĞĞ¶Ô±È*********************/ 
+    /***************æŠŠå·¦å³å›¾åƒçš„æ ¡æ­£ç»“æœæ˜¾ç¤ºåˆ°åŒä¸€ç”»é¢ä¸Šè¿›è¡Œå¯¹æ¯”*********************/ 
     Mat canvas;  
     double sf=0.7;  
     int w, h;   
     w = cvRound(imageSize.width * sf);  
     h = cvRound(imageSize.height * sf);  
     canvas.create(h, w * 2, CV_8UC1);  
-    //×óÍ¼Ïñ»­µ½»­²¼ÉÏ
-	//µÃµ½»­²¼µÄ×ó°ë²¿·Ö 
+    //å·¦å›¾åƒç”»åˆ°ç”»å¸ƒä¸Š
+	//å¾—åˆ°ç”»å¸ƒçš„å·¦åŠéƒ¨åˆ† 
     Mat canvasPart = canvas(Rect(w*0, 0, w, h));  
-	//°ÑÍ¼ÏñËõ·Åµ½¸úcanvasPartÒ»Ñù´óĞ¡²¢Ó³Éäµ½»­²¼canvasµÄROIÇøÓòÖĞ  
+	//æŠŠå›¾åƒç¼©æ”¾åˆ°è·ŸcanvasPartä¸€æ ·å¤§å°å¹¶æ˜ å°„åˆ°ç”»å¸ƒcanvasçš„ROIåŒºåŸŸä¸­  
     resize(imgLeft, canvasPart, canvasPart.size(), 0, 0, INTER_AREA);     
-    //ÓÒÍ¼Ïñ»­µ½»­²¼ÉÏ 
+    //å³å›¾åƒç”»åˆ°ç”»å¸ƒä¸Š 
     canvasPart = canvas(Rect(w, 0, w, h)); 
     resize(imgRight, canvasPart, canvasPart.size(), 0, 0, INTER_AREA);  
-    //»­ÉÏ¶ÔÓ¦µÄÏßÌõ
+    //ç”»ä¸Šå¯¹åº”çš„çº¿æ¡
     for (int i = 0; i < canvas.rows;i+=16)  
         line(canvas, Point(0, i), Point(canvas.cols, i), Scalar(0, 255, 0), 1, 8);  
     imshow("rectified", canvas);
@@ -307,7 +319,7 @@ void show_rectify_performance()
 }
 bool getDisparityRGBImage(cv::Mat& disparity, cv::Mat& disparityRGBImage, bool isColor)
 {
-	// ½«Ô­Ê¼ÊÓ²îÊı¾İµÄÎ»Éî×ª»»Îª 8 Î»
+	// å°†åŸå§‹è§†å·®æ•°æ®çš„ä½æ·±è½¬æ¢ä¸º 8 ä½
 	cv::Mat disp8u;
 	if (disparity.depth() != CV_8U)
 	{
@@ -318,7 +330,7 @@ bool getDisparityRGBImage(cv::Mat& disparity, cv::Mat& disparityRGBImage, bool i
 		disp8u = disparity;
 	}
 
-	// ×ª»»ÎªÎ±²ÊÉ«Í¼Ïñ »ò »Ò¶ÈÍ¼Ïñ
+	// è½¬æ¢ä¸ºä¼ªå½©è‰²å›¾åƒ æˆ– ç°åº¦å›¾åƒ
 	if (isColor)
 	{
 		if (disparityRGBImage.empty() || disparityRGBImage.type() != CV_8UC3 )
@@ -355,39 +367,39 @@ bool getDisparityRGBImage(cv::Mat& disparity, cv::Mat& disparityRGBImage, bool i
 }
 void stereo_match_BM(int,void*)
 {
-	//minDisparity´ú±íÁËÆ¥ÅäËÑË÷´ÓÄÄÀï¿ªÊ¼,Ä¬ÈÏÖµÎª 0
-	//numberOfDisparities±íÊ¾×î´óËÑË÷ÊÓ²î·¶Î§
-	//¾ÙÀı×Ó£¬ÒªÔÚÓÒÍ¼ÖĞËÑË÷×óÍ¼ÖĞµÄµã£¨x0,y0£©µÄÆ¥Åäµã£¬ÔòËÑË÷Ê±°ÑÓÒÍ¼ÖĞµÄ£¨x0,y0£©¿´×öÔ­µã
-	//ËÑË÷·½ÏòÏò×óÎªÕı£¬ËÑË÷·¶Î§ÎªminDisparity-numberOfDisparities¡£
-	//ÈôminDisparity=0£¬±íÊ¾´ÓÓÒÍ¼ÖĞµÄµã£¨x0,y0£©¿ªÊ¼Ïò×óËÑË÷
-	//ÈôminDisparity<0£¬±íÊ¾´ÓÓÒÍ¼ÖĞµÄµã£¨x0-minDisparity,y0£©¿ªÊ¼Ïò×óËÑË÷
-	//blockSize±íÊ¾Æ¥Åä´°¿Ú´óĞ¡¡£´°¿ÚÔ½´ó£¬Æ¥Åä½á¹ûµÄÂ³°ôĞÔÔ½Ç¿£¬µ«ÊÇ¾«¶ÈÔ½²î£¬·´Ö®
-	//ÆäËû×´Ì¬²ÎÊıÔİÇÒÊ¹ÓÃÆäÄ¬ÈÏÖµ
-	//opencv3.0°æ±¾ÏÂ£¬StereoBM¶ÔÏó²»ÄÜÖ±½ÓÍ¨¹ı·ÃÎÊstateÀ´·ÃÎÊ²ÎÊı£¬
-	//Ö»ÄÜÍ¨¹ısetterºÍgetter·½·¨À´ÉèÖÃºÍ»ñÈ¡²ÎÊı
+	//minDisparityä»£è¡¨äº†åŒ¹é…æœç´¢ä»å“ªé‡Œå¼€å§‹,é»˜è®¤å€¼ä¸º 0
+	//numberOfDisparitiesè¡¨ç¤ºæœ€å¤§æœç´¢è§†å·®èŒƒå›´
+	//ä¸¾ä¾‹å­ï¼Œè¦åœ¨å³å›¾ä¸­æœç´¢å·¦å›¾ä¸­çš„ç‚¹ï¼ˆx0,y0ï¼‰çš„åŒ¹é…ç‚¹ï¼Œåˆ™æœç´¢æ—¶æŠŠå³å›¾ä¸­çš„ï¼ˆx0,y0ï¼‰çœ‹åšåŸç‚¹
+	//æœç´¢æ–¹å‘å‘å·¦ä¸ºæ­£ï¼Œæœç´¢èŒƒå›´ä¸ºminDisparity-numberOfDisparitiesã€‚
+	//è‹¥minDisparity=0ï¼Œè¡¨ç¤ºä»å³å›¾ä¸­çš„ç‚¹ï¼ˆx0,y0ï¼‰å¼€å§‹å‘å·¦æœç´¢
+	//è‹¥minDisparity<0ï¼Œè¡¨ç¤ºä»å³å›¾ä¸­çš„ç‚¹ï¼ˆx0-minDisparity,y0ï¼‰å¼€å§‹å‘å·¦æœç´¢
+	//blockSizeè¡¨ç¤ºåŒ¹é…çª—å£å¤§å°ã€‚çª—å£è¶Šå¤§ï¼ŒåŒ¹é…ç»“æœçš„é²æ£’æ€§è¶Šå¼ºï¼Œä½†æ˜¯ç²¾åº¦è¶Šå·®ï¼Œåä¹‹
+	//å…¶ä»–çŠ¶æ€å‚æ•°æš‚ä¸”ä½¿ç”¨å…¶é»˜è®¤å€¼
+	//opencv3.0ç‰ˆæœ¬ä¸‹ï¼ŒStereoBMå¯¹è±¡ä¸èƒ½ç›´æ¥é€šè¿‡è®¿é—®stateæ¥è®¿é—®å‚æ•°ï¼Œ
+	//åªèƒ½é€šè¿‡setterå’Œgetteræ–¹æ³•æ¥è®¾ç½®å’Œè·å–å‚æ•°
 
-	bm->setUniquenessRatio(UniquenessRatio);//ÊÓ²îÎ¨Ò»ĞÔ°Ù·Ö±È
+	bm->setUniquenessRatio(UniquenessRatio);//è§†å·®å”¯ä¸€æ€§ç™¾åˆ†æ¯”
 	bm->setNumDisparities(16*numDisparities+16);
 	bm->setBlockSize(2*blockSize+5);
-	//bm->setTextureThreshold(10);//µÍÎÆÀíÇøÓòµÄÅĞ¶ÏãĞÖµ
+	//bm->setTextureThreshold(10);//ä½çº¹ç†åŒºåŸŸçš„åˆ¤æ–­é˜ˆå€¼
 	//bm->setPreFilterType(CV_STEREO_BM_NORMALIZED_RESPONSE);//CV_STEREO_BM_NORMALIZED_RESPONSE  CV_STEREO_BM_XSOBEL
-	//bm->setPreFilterSize(9);//Ô¤´¦ÀíÂË²¨Æ÷´°¿Ú´óĞ¡,Ò»°ãÔÚ[5£¬21]Ö®¼ä
-	//bm->setPreFilterCap(31);//Ô¤´¦ÀíÂË²¨Æ÷µÄ½Ø¶ÏÖµ,²ÎÊı·¶Î§£º1 - 31£¨ÎÄµµÖĞÊÇ31£¬µ«´úÂëÖĞÊÇ 63£©
+	//bm->setPreFilterSize(9);//é¢„å¤„ç†æ»¤æ³¢å™¨çª—å£å¤§å°,ä¸€èˆ¬åœ¨[5ï¼Œ21]ä¹‹é—´
+	//bm->setPreFilterCap(31);//é¢„å¤„ç†æ»¤æ³¢å™¨çš„æˆªæ–­å€¼,å‚æ•°èŒƒå›´ï¼š1 - 31ï¼ˆæ–‡æ¡£ä¸­æ˜¯31ï¼Œä½†ä»£ç ä¸­æ˜¯ 63ï¼‰
 
-	//¼ÆËã»ñÈ¡ÊÓ²îÍ¼
+	//è®¡ç®—è·å–è§†å·®å›¾
 	bm->compute(imgLeft, imgRight, disparity);
 
-	//×¢Òâopencv3.0°æ±¾ÏÂµÄBMºÍSGBM·½·¨¼ÆËã³öµÄÊÓ²î¶¼ÊÇCV_16S¸ñÊ½µÄ
-	//²Î¿¼ÍøÉÏ¸ù¾İÔ´´úÂëÄÚÈİ£¬µÃµ½µÄÔ­Ê¼ÊÓ²îÖµĞèÒª³ıÒÔ16²ÅÄÜµÃµ½ÕæÊµµÄÊÓ²îÖµ
+	//æ³¨æ„opencv3.0ç‰ˆæœ¬ä¸‹çš„BMå’ŒSGBMæ–¹æ³•è®¡ç®—å‡ºçš„è§†å·®éƒ½æ˜¯CV_16Sæ ¼å¼çš„
+	//å‚è€ƒç½‘ä¸Šæ ¹æ®æºä»£ç å†…å®¹ï¼Œå¾—åˆ°çš„åŸå§‹è§†å·®å€¼éœ€è¦é™¤ä»¥16æ‰èƒ½å¾—åˆ°çœŸå®çš„è§†å·®å€¼
 	disparity.convertTo(disparity_real, CV_8U, 1.0/16);
 
-	//½«µÃµ½µÄÊÓ²îÖµ·¶Î§£¨minDisparity-£¨minDisparity+numDisparities£©£©Í¶Ó°µ½(0-255)
+	//å°†å¾—åˆ°çš„è§†å·®å€¼èŒƒå›´ï¼ˆminDisparity-ï¼ˆminDisparity+numDisparitiesï¼‰ï¼‰æŠ•å½±åˆ°(0-255)
 	disparity_real.convertTo(disparity8U, CV_8U, 255.0/numDisparities);
 		
 	//imshow("disparity",disparity);
 	imshow("disparity_real",disparity_real);
 	//imshow("disparity_8U",disparity8U);
-	//¸ù¾İisColorµÄÖµÑ¡ÔñÊÇ·ñ½øĞĞÉî¶ÈÍ¼Î±²ÊÉ«ÏÔÊ¾
+	//æ ¹æ®isColorçš„å€¼é€‰æ‹©æ˜¯å¦è¿›è¡Œæ·±åº¦å›¾ä¼ªå½©è‰²æ˜¾ç¤º
 	Mat disparityRGBImage;
 	bool isColor=false;
 	bool OK=getDisparityRGBImage(disparity,disparityRGBImage,isColor);
@@ -407,7 +419,7 @@ void stereo_match_BM(int,void*)
 int main(int argc, char* argv[])
 {
 	/***********************************************************************************/
-	/*****************************´ÓÎÄ¼şÖĞ¶ÁÈ¡Ïà»ú±ê¶¨½á¹û******************************/
+	/*****************************ä»æ–‡ä»¶ä¸­è¯»å–ç›¸æœºæ ‡å®šç»“æœ******************************/
 	const string filename="F:\\Binocular_Stereo_Vision_Test\\Calibration_Result.xml";
 	bool readOK=readFile(filename);
 	if(!readOK)
@@ -416,7 +428,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	/**********************************************************************************/
-	/********************************Á¢ÌåĞ£Õı******************************************/
+	/********************************ç«‹ä½“æ ¡æ­£******************************************/
 	bool useCalibrated=true; 
 	//int getImagePair=IMAGELIST;
 	int getImagePair=CAMERA;
@@ -430,7 +442,7 @@ int main(int argc, char* argv[])
 		waitKey(5000);
 		return -1;
 	}
-    //°Ñ×óÓÒÍ¼ÏñµÄĞ£Õı½á¹ûÏÔÊ¾µ½Í¬Ò»»­ÃæÉÏ½øĞĞ¶Ô±È
+    //æŠŠå·¦å³å›¾åƒçš„æ ¡æ­£ç»“æœæ˜¾ç¤ºåˆ°åŒä¸€ç”»é¢ä¸Šè¿›è¡Œå¯¹æ¯”
     bool showRectifyPerformance=true;
 	if(showRectifyPerformance)
 	{
@@ -438,8 +450,8 @@ int main(int argc, char* argv[])
 	}
 
 	/**********************************************************************************/
-	/********************************Á¢ÌåÆ¥Åä******************************************/
-	//Í¨¹ıÉèÖÃ»¬¶¯Ìõ¿ÉÒÔ¹Û²ìÈı¸öÖ÷Òª²ÎÊıµÄ±ä»¯¶ÔÆ¥ÅäĞ§¹ûµÄÓ°Ïì
+	/********************************ç«‹ä½“åŒ¹é…******************************************/
+	//é€šè¿‡è®¾ç½®æ»‘åŠ¨æ¡å¯ä»¥è§‚å¯Ÿä¸‰ä¸ªä¸»è¦å‚æ•°çš„å˜åŒ–å¯¹åŒ¹é…æ•ˆæœçš„å½±å“
 	namedWindow("disparity_real", WINDOW_AUTOSIZE);
 	bm->compute(imgLeft, imgRight, disparity);
 	//imshow("disparity_real",disparity);
@@ -449,14 +461,14 @@ int main(int argc, char* argv[])
 	
 
 	/**********************************************************************************/
-	/********************************ÈıÎ¬ÖØ½¨******************************************/
-	//ÉèÖÃÊó±ê»Øµ÷º¯Êıon_mouse()ÓÃÓÚÊä³öÊó±êÖ¸¶¨µã£¨µ¥»÷×ó¼ü£©µÄÊÓ²îÖµºÍÈıÎ¬XYZÖµ£¨µ¥Î»£ºÀåÃ×£©
+	/********************************ä¸‰ç»´é‡å»º******************************************/
+	//è®¾ç½®é¼ æ ‡å›è°ƒå‡½æ•°on_mouse()ç”¨äºè¾“å‡ºé¼ æ ‡æŒ‡å®šç‚¹ï¼ˆå•å‡»å·¦é”®ï¼‰çš„è§†å·®å€¼å’Œä¸‰ç»´XYZå€¼ï¼ˆå•ä½ï¼šå˜ç±³ï¼‰
 	cvSetMouseCallback("disparity_real",on_mouse,NULL);
 	while(1)
 	{
 		if(mousePoint.area()>0)
 		{
-			//½«Êó±êÖ¸¶¨¹ıµÄµãÓÃÔ²È¦±ê¼Ç³öÀ´
+			//å°†é¼ æ ‡æŒ‡å®šè¿‡çš„ç‚¹ç”¨åœ†åœˆæ ‡è®°å‡ºæ¥
 			circle(disparity_real,mousePoint,10,Scalar(255,255,255),3);
 			imshow("disparity_real",disparity_real);
 
@@ -465,11 +477,11 @@ int main(int argc, char* argv[])
 			//cout<<"disparity="<<disparity.at<double>(mousePoint)<<endl;
 			_3dImage=Mat( disparity.rows, disparity.cols, CV_32FC3);
 			reprojectImageTo3D(disparity,_3dImage,Q,true);
-			//ÔÚÊµ¼ÊÇó¾àÀëÊ±£¬ReprojectTo3D³öÀ´µÄX / W, Y / W, Z / W¶¼Òª³ËÒÔ16
-			//²ÅÄÜµÃµ½ÕıÈ·µÄÈıÎ¬×ø±êĞÅÏ¢(ÒÔºÁÃ×Îªµ¥Î»),ÒªµÃµ½ÒÔÀåÃ×Îªµ¥Î»µÄÈıÎ¬×ø±êÔò³ËÒÔ1.6
-			_3dImage=_3dImage*1.6;//µÃµ½ÒÔÀåÃ×Îªµ¥Î»µÄÈıÎ¬×ø±ê
-			//imshow("ÈıÎ¬Í¼",_3dImage);
-			//ReprojectTo3D()º¯Êı³öÀ´µÄY×ø±ê·½ÏòºÍÊµ¼ÊÏà·´£¬ĞèÒª´¦ÀíÒ»ÏÂ
+			//åœ¨å®é™…æ±‚è·ç¦»æ—¶ï¼ŒReprojectTo3Då‡ºæ¥çš„X / W, Y / W, Z / Wéƒ½è¦ä¹˜ä»¥16
+			//æ‰èƒ½å¾—åˆ°æ­£ç¡®çš„ä¸‰ç»´åæ ‡ä¿¡æ¯(ä»¥æ¯«ç±³ä¸ºå•ä½),è¦å¾—åˆ°ä»¥å˜ç±³ä¸ºå•ä½çš„ä¸‰ç»´åæ ‡åˆ™ä¹˜ä»¥1.6
+			_3dImage=_3dImage*1.6;//å¾—åˆ°ä»¥å˜ç±³ä¸ºå•ä½çš„ä¸‰ç»´åæ ‡
+			//imshow("ä¸‰ç»´å›¾",_3dImage);
+			//ReprojectTo3D()å‡½æ•°å‡ºæ¥çš„Yåæ ‡æ–¹å‘å’Œå®é™…ç›¸åï¼Œéœ€è¦å¤„ç†ä¸€ä¸‹
 			for (int y = 0; y < _3dImage.rows; ++y)
 			{
 				for (int x = 0; x < _3dImage.cols; ++x)
@@ -506,7 +518,7 @@ int main(int argc, char* argv[])
 	imshow("zImage",xyz[2]);
 	//imshow("_3dImage",_3dImage);
 	*/
-	cout<<"°´ÈÎÒâ¼üÍË³ö³ÌĞò..."<<endl;
+	cout<<"æŒ‰ä»»æ„é”®é€€å‡ºç¨‹åº..."<<endl;
 	waitKey(0);
 	return 0;
 }
